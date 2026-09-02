@@ -62,14 +62,11 @@
 </head>
 <body class="min-h-screen flex flex-col">
 
-  <!-- ========================================== -->
-  <!-- CABEÇALHO ESCURO (DESIGN LOVABLE/BLACK)     -->
-  <!-- ========================================== -->
+  <!-- CABEÇALHO ESCURO -->
   <header class="bg-[#0f0f0f] text-white py-8 px-4 md:px-12 border-b border-neutral-800 no-print">
     <div class="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
       
       <div class="flex items-center gap-5">
-        <!-- Logo do FC Académicos Embutida -->
         <div class="w-16 h-16 bg-white rounded-full p-1.5 flex items-center justify-center shadow-inner shrink-0">
           <img id="club-logo" src="logo.png" alt="FC Académicos" class="max-h-full max-w-full object-contain">
         </div>
@@ -94,9 +91,7 @@
     </div>
   </header>
 
-  <!-- ========================================== -->
-  <!-- CONTEÚDO PRINCIPAL (CARD BRANCO)           -->
-  <!-- ========================================== -->
+  <!-- CONTEÚDO PRINCIPAL -->
   <main class="flex-1 py-8 px-4 bg-[#f8f9fa] text-slate-800">
     <div class="max-w-5xl mx-auto">
 
@@ -108,13 +103,11 @@
           
           <form id="athleteForm" onsubmit="salvarAtleta(event)" class="space-y-6">
             
-            <!-- Campo 1: Nome Completo -->
             <div>
               <label class="label-title">NOME COMPLETO DO/A ATLETA *</label>
               <input type="text" id="nome" required placeholder="Nome como consta no documento de identificação" class="form-input-clean">
             </div>
 
-            <!-- Linha 2: Licença & Compromisso -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label class="label-title">LICENÇA N.°</label>
@@ -133,7 +126,6 @@
               </div>
             </div>
 
-            <!-- Linha 3: Data Nasc & Escalão -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label class="label-title">DATA DE NASCIMENTO *</label>
@@ -155,7 +147,6 @@
               </div>
             </div>
 
-            <!-- Linha 4: Nacionalidade & Naturalidade -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label class="label-title">NACIONALIDADE *</label>
@@ -167,7 +158,6 @@
               </div>
             </div>
 
-            <!-- Linha 5: Nome Pai & Mãe -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label class="label-title">NOME DO PAI</label>
@@ -179,7 +169,6 @@
               </div>
             </div>
 
-            <!-- Linha 6: CC & Validade -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label class="label-title">N.º CC / PASSAPORTE / TÍTULO DE RESIDÊNCIA *</label>
@@ -191,7 +180,6 @@
               </div>
             </div>
 
-            <!-- Linha 7: NIF & Utente -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label class="label-title">NÚMERO IDENTIFICAÇÃO FISCAL (NIF) *</label>
@@ -203,7 +191,6 @@
               </div>
             </div>
 
-            <!-- Linha 8: Telefone & Código Postal -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label class="label-title">CONTACTO TELEFÓNICO *</label>
@@ -215,20 +202,18 @@
               </div>
             </div>
 
-            <!-- Linha 9: Morada -->
             <div>
               <label class="label-title">MORADA *</label>
               <textarea id="morada" required rows="2" placeholder="Rua, n.º, andar, localidade" class="form-input-clean resize-none"></textarea>
             </div>
 
-            <!-- Barra de Ações (Botões Inferiores) -->
             <div class="no-print pt-6 border-t border-slate-100 flex flex-wrap items-center gap-3">
               <button type="submit" id="btnSalvar" class="bg-black hover:bg-neutral-800 text-white font-medium text-xs px-5 py-3 rounded-lg shadow-sm flex items-center gap-2 transition">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 002-2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
                 Guardar na base de dados
               </button>
 
-              <button type="button" onclick="gerarPDFIndividual()" class="bg-white hover:bg-slate-50 text-slate-800 font-medium text-xs px-5 py-3 rounded-lg border border-slate-300 shadow-sm flex items-center gap-2 transition">
+              <button type="button" onclick="gerarPDFDiv('form-container', document.getElementById('nome').value)" class="bg-white hover:bg-slate-50 text-slate-800 font-medium text-xs px-5 py-3 rounded-lg border border-slate-300 shadow-sm flex items-center gap-2 transition">
                 <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
                 Imprimir / Guardar PDF
               </button>
@@ -249,15 +234,15 @@
       <!-- ========================================== -->
       <section id="sec-admin" class="hidden">
         
-        <!-- Caixa de Login -->
+        <!-- Caixa de Login (Username Simples) -->
         <div id="admin-login-box" class="max-w-md mx-auto bg-white p-8 rounded-2xl shadow-sm border border-slate-200 mt-6">
           <h2 class="text-xl font-bold text-slate-900 text-center mb-1">Acesso Reservado</h2>
           <p class="text-xs text-slate-500 text-center mb-6">Direção & Suporte Informático</p>
           
           <form onsubmit="autenticarAdmin(event)" class="space-y-4">
             <div>
-              <label class="label-title">E-MAIL / UTILIZADOR</label>
-              <input type="email" id="login-user" required placeholder="ex: carlosmartins@academicos.pt" class="form-input-clean">
+              <label class="label-title">UTILIZADOR</label>
+              <input type="text" id="login-user" required placeholder="ex: hamiltonjunior" class="form-input-clean">
             </div>
             <div>
               <label class="label-title">PALAVRA-PASSE</label>
@@ -269,7 +254,7 @@
           </form>
         </div>
 
-        <!-- Área Dashboard Admin -->
+        <!-- Dashboard Admin -->
         <div id="admin-dashboard" class="hidden print-card bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-slate-200">
           
           <div class="no-print border-b border-slate-100 pb-5 mb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -338,19 +323,45 @@
     </div>
   </main>
 
-  <script>
-    // Logo real do FC Académicos embutida
-    document.getElementById('club-logo').src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZAAAAGQCAYAAACAvzbMAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAGr5JREFUeNrs3X3MZWV93/HPmXPmzszswu7L8jLsbLmyIksIilU0YjAatRpjNTRqm5qmP9R/2qRNTf9p0/6T/mPSpu3Pn33S/mP/aZuYptHG2jQqIikCakA3yL6wLOy+7M7s3Jk55zzP/s45L64sM8A+MOfcc+7X/SSbd3fOee655/489/X9Xj/f73NSBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABmXp04AEx/v3fOnD4O+kS2S3/2/vTne8f14/rxw3P66/29k3reD37/yD333HPf213A2Gq8ABifmS4A3vSldP1X33vSj38fOal333/x73/h4/s+8oUvfXlsdzA+3QcE791vA/f8m5m98+Z/4pP1m1/8X8a2I2PceOvd1+/5x9vfPz/e4B73Nve603rb197x6/OjfjC324Kxd/fdL3nr6T/+zXf29p3uA+x/d9/x4gfv+p0/ee/U4B4XkC++2IOn3nnlZ/+XvOvdXxjvhv4+fS9/3d13vPT+V//s/fODe74XmPfce3P/fe9508zYdhhf6X3e/49466mPvea898492Qk++/Y4iL3vffm3/v15f2q1O7M7h+9u64O/+w1XjeO43uC+M/eIe0f31I78S/ce4p4P//4X3j4x2p2p322/23r3O/vIvb911SvfI/a3H24f+mK+yI/s92H/5903//Uffvd/2M9+2G3X9vvd+aI++G133/P6s/o4N4/G+9jXf9+vfejM1u/A61p3/391D/IjfLg3/s2//m03vu8vDvfX313r4bI/fPdL39l/z2v/3/i++sE9P/3H+O4/e8s4ju99mP/3fR+//z/3d17u7m1v1933f/63XvLhX3j1P93/1vd44b/7yAdefP+P8f2vvuXU73b75AfeIvf1B1/8I//+/p/O4+XN/eP754v02Jcfvf3508/X639207e++m//6R8//uP31Yv/6mN//08//1vf/c6ff/C6X3/Dq962/a0//Pz33//8Lzznv/r8e3/qJ95w1Yv+zvd/x4/86M0v1e/7yS940Tseff8fvvG6m975U69//a2fefcvXHfT+z/37e//8Xff+7L/+qfefMs3L47tI3+6v3f+Lfv3Xff/1d13vvT/uub3/st/+f0Xfs+Pfesr/8d//PTrf++d17zs7a+/5tq/+3f2v+e9b/m+d7ziX3/sHz//k/e/5q2ve9s3ve4d3/S8f3zzS3/8x3/wHz/xrve97QdefuuPf++Pv+PVP3bX2976mptv+1v16s/+8q+/5yevvvYd/+3LP/4/fe5v/sSrvvhvfvS9X/3G59x54+d/5Z1vGcc33n3Hi/9L91fO45m3e+/i3fe//A3XXfuS/228e3b7r/q/f80Pvec/feWf/sHfffnfvu2fvuPfvOf/eMf3veNfveSvf/Lrv/4933Hz/3bzK/+v23/5/3P7K//+1vufcfP/fMNLbvqX7/2jL37aRz70/3/z9S/8a2/63/7gB/a1f7v5+j/7Xy98/i0vvf11/+eN173kR196w3e+/v3aP/3oH333Lbf/ymveq411f4+4x9e9+yU3/Z+/439/xU/d95HfvOIn3vzT13znv3/Tq9/+4/f8i194wxvff83X/+1vvvqfv/1tP3/bL7/9bW/5yfe//X23XH3dL735uqtue9t3/o+/X/+yG7/5jS/78/q0t37x4vvd+x6m4+3d65/7s3/6C2/4iXf+zG3feO91P/3/fuetv3zTq/6/X/z1b3r5jb+s/ePffvS//sB1X3znj/3O7z/n33/6oX/y/jdddfXPvvmHfuxd113947f9999y7Q++6Ofe+0d33fWW635C/5dve+uv3Xz3Xdf9x1f8y49eef3v/O8/esvr3/1zb/2X/6b/mrf/l+deff2t12S/+/i4b3/9Kx/0k3v/38P98/d47vS93/HOH/oH99/9c+/6vdde9U/e/p0/9J5//vS/fddPvubf/stfuvHmt933/I/8v7X//bU33vh/vvDaa9//xje+8l033Prmd95856//q5f/s3f82y/ffev3/d41/9W133e9Pv0b//X7X3X91Zf8Pzf//q+/4XfeevOfXHfde+7+j+/831/13te+6iXvfs/r/snL/vevf3vtn1X/5iXvfP433nvj22/58Q/c/r1vfvfr//1/fs33veW9f3nr/e/UfvuD/L2n9+8b/fvvfukf5O67/2D6v+59f/2//+U9b7z55v9c33vze37yve/9iXfd/o5/eOf3/eYd/8fb/9mv/5tf/vX/etO3veE33/5v73nrf+xfet/v3fqPbr3yO3703T/5pve/5mff9p6fffsb3vrm93//y9900/Pve/3f+e4/c/fvv/E29b9c9y8/8fS/eeAXXvvbf+49L3n11Tfe+u6bfuLn33Ld2/7yG6676n+64qrfvu0fveU93/m217/lD9/y6nf/84te/5v/6yvf/93v/v2/ev8H3v+mX/ze2378D/4vfT/2o99684+882fvuf2997znnX/yve9/zzvefvuN913x3z1fXvD4uL65i3/0vI9+8Jfe8zM//zP3/e4vv/jmt3/Xm+999W//z4996FffeetN/+GNP33dD3zjG2/8L1/zI9/zr/v+1WtfetU3/Z2ffOf1X/eG2+/813e/+1+98s/efv/bf/J9t932/jfd+S/++fXf8+Nvet2P3/63ve0f3nzXq6+87v+7+Y//1Qfff/Odb/v3b/mpm17zFz/3Gz9y+w/f/hPf+9/e82fv+/M//Pj/cvM1t/2zNz/rmrf/D0/eN4Xv/d/vf/4fve/6/uA/Xf2/feIff++tf+H9mS+96G3f4i/++3u/U99X3f831f/8vve/7p4ffuvv3/vL11394fve94e/s+4fX/s/fe9/8/bf9R/e883v+q+veun3f8f1L/73p16qvvp/ueaNl1/3Qz937U+8441f+fH33Pv7v/qjN1591fvvfvdPfPh5t/9X17/3yL8s33vfnS988Pj4uIn3pze3D47i6fS9qff31NvfI+433f/6I9//I3/w+/f8yM+/6I6f+p5b/uAt/4Xq07dfet93f9frv2ffB0Oev/v8P/2i/fX/7k+MceLqf334RfeM8b8f+lD9O47r/vD97/+h/ff933ffM8S399z9mX1/8A/393+/5fvvuv1pP80//G/+X2aX9yG+T/X71Pf10fvS+/uUvv3X45pU+tP3Lvd2qTvdv+fU/f33+d43vPfv/uN4i7uX+9S/78/3qL3o3+/v03HveOvt++E940T7o++M2/v83Gf2p+e6+i2f/P16X+oX9U9f34f71O91uPf94T/747/3104c8f+8E3u/03fM6U9v6E+3d/ee3vdP/2n//eG843e9x8vG9E6M3a3+9A4a0x90f/S9qXvXo/u3m/25fXfP2S+x+sK3f2T2A/83N/02v32b+/y6f9i/5+H4E/7Mv4S9X215v0X4e7X43m/A57eA14BfAX4DeAvws8B/C/xL4BXge4HfBD4NfAz4EHAfeI77/mzwGeBq4Pv3//0p8FfAh4G/3T9+/4R+/3T4a/rn4C3Ah8E6+F3gs3/mS8u382U4/3z5e97oAfs6A7c2fP+P3bO3k7v/3+9e/8O9y+fGvXp3S2X/uI9E/0X1E3e3+9q3+/X3vvdvf6sX8I3I64I++f0UqC8/087195P1+/xJvf3Aew974EOf91/u++5f7u5xS/q0d6fA3/1X141f3Rvf+GZ1952v8s/p7pP2+M4qf9+/e1X9oX4+/p3v1y75O6+/yT1p6pIOf/o/v6P+/f59X3O73111fPfttq192jXU63I1v7i2+M43+XfS34360e/a3z/x0o+e1f4xft8P8bO8e7yA4/0f+3+/2XvEdfN/6Y94uA+q++Hw+7Ua2R+/m03e9u5e1L1+m6S9+fvdG+64oX5d3XlD33l33p33vv2Ouu2OWO1edp3s8jOq0R+vX3v11XfU9fptq/Uv/O4p//43fA/a9v0f/z37L48943mX/Gz3e/3hXq1/3IedO6X+/90n3/nCff67x1e27/537lI/7I/E6vF26R++L431A7rU7Uv/qF080Y9vGff9d4jvt770sL4v9K++a2vvnqjX9O/9/017sbrf62/0f++6/s5+C1X444+v3eN3d/d2994H3P14r33mP6f9xIe+02u6t+8e3a2/XfS459bvtPce6b+eL1I/j3f4P/qvvf0H/7/yH1k+/+s9+O4sU38sVvv4eXoM//S8Ptz3u/yM3x6e2fGj//z8j/P44s+O5s3f2O27fS//7t348d4x398L/rM4/Dsf8yC2D/3X/88f2H304vvh3P/+p+4D/9e//9m93+f++0fTf/s/uM8/P5vE36z/11883+9796e62615GvdL7I/70f2D/O9y8R3+U53v4d8/8/z+vD4E41e//p+92N6G3t4pnv59mO4e7R4//45X/3+84m443L+/v/fR5/U+oM757m0sH/049L3H/N+95/zU7zH73f/+0sL7m3v5XoMfe9c3O29cI3/6+/647xTjef9mIOfX3t+/5d72s2f8Tz90sIeGce190O2X3vI96bvf//Yn1M1L4p3S/T/6x139d67x4O925yL4x70nL3k52/n2oA9L/8m84v3A2yS/C9/H11D1X997v818/N6AfxT8KPAi8O3A58CPf4d7u/v3uE/c+/3Dfe4X//xJ3S+6/y/3/d6XpP/a3y/c57vd20W48d2/Dnx7+3e3/d6f3qf/N3f/fvd3/2H/+S+87v3u7Xz3E3f+/g/3+A13e/7s292/e59392/c3d32p7t3cI8GgACUuR34v8CXdO+/BvA14FPAt7fv51+m/mHgu0Dvf3+D+/c+T6S+S53A15Tudf9D92u//fXddI3vJ/47wH3x0i90X5N/v1e55xL3X9Xdzw+/0fX94e/U923vef8398Xf3/09//Cfdq/LpA2Y64C65q233/y/vPld33/3K9/2o7/72y85qY3xL4C/6d/vCqf9/2q/+1/U4xX3+E7gX2U84j5xO4sAIAAl1sBfAn/oXv8pP4X7yq+2vx++iS85H03eB/wK8E/aL75P6n8q332e2/veT739J5+0L/0A3wHq/y/mC9m2X7i23eM+seUegACUWgf843v/S35+P6k3cde8L3211m3Afww8vftf7/1L6Sfw0e451U/A43oX/Xf/P//m//e9L3/j9bd+I/k4M3f/LwH1LzSj2yE82m7A/CjwyT1/yY3uB9o+Xf+7wHe52/497/0n1S/A1/b2m1933990/yXwS3O386E8S0x/v3/O3N1S+Aeg6wO5S31I3a027oG738fV3e+7+fS9/3q8zXvvxvf+f+1j3+/43X908N3A3S3d9+/4R3vX3a3j82fT+1M86vS515711yS9e6a3f124R93m3g3oevv+/s5/mvtD7uE4sO5+v++3G6fP2R2X63f3w33O0A2/990A+27ofr2ve9v3/k3vj3T/pne+/f5dZ0p//2p90p0A3+6S9tJ1T989k9bve429sX651717Sncvce8n8L3uMvXvvXGPe+826d2/4yXv/Xb/2rRze+/459Ldf96de5C5C7hL3Nve39L3mrs7uTsnvXfvd691763ud+/m9v0fG+P4A+m3/v199y3333d875323e2mXp8+7O95eL3/e/p/a1f599E955G3/2B/n/T1509vd206i+O32j24++f2+Ivf0/35e84pX9S9v6I+pX1N9zruM6f/I+/14917+2S70bvr3zE2p/3f74XqT+1dZf3a763P3s630M/+S9179H3i/vXp3S2S3/L3p96fIffv/v0yvdNn1SduXvD4fR9X9xKduI7pTveJ5M/Lz1X0P6fvf2v/NfK72k3pEfdk/aW+794L1L/MvdP98Tj74/77+fG4c1X/7N0d3XmPuvvf3Xm5++t6iI/0fuzv1c+ne3+5f8263+vef294z7p29e84sX/pXudP/O971j9p/e94v3bveO+3+8c+8S++o957u9+e9/U691jvvxO80T3Wb/r/tqf+x+/u/N13vvP2/yZ7D75vXQO8tP/6eIffvvd5fM2a3h+R/f71P5P0+/0/851z2l3e+5n/8G73499i8q3v/bXf19X4NqC/9f/O/O8Dfg7vj1SAtXf4m2+/8k9+9/4/3X3Xvf/9N8A/+aH3fOev40f5P31I/X4s74/o34/2/Xk/+L8/+Xf33/fW133X+/8M3x28F/sP/K/f++C3XfvI8b/Fm981f9/f/fN7/u9Pv183/8z//Bff+IqP3/v1P3i3C8Af5X/7B/4M+Lvx3Svd+y0W/z3452296Tz4Z31s38d2fX/A4f/X4X8A/hPgD9yvf9fXm7p0r+/j2vB7pAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA2N339s2/C0x/+/s2aU+/vI5f284/d3+3+/sW/8p3f6s3s4/S3b3zveS+49uT9fdf2+m86tX0v/q34fvrfGef99N2L//sD2p4ffx6f8tS1m3Xb5M9M/u/O+P4A8b6i+O5J92+K+vFve0P9n/uXvv7eO8/2G40/x69/72e/433f+Ym/9A39/jH+fX/26M/+9Sfu/69f984fffvXvdvP//Tf36f/9/33/27/93fM74vPft357Ssf/1n9N5/1xL/6i2/94a+O8e2D9+3fO/D+4J74p7O8yT2qX/S5m/39XftG83s/pIev2/1S+u+2+x7jXy/+I3e3S/2YevXf587d60e+/o3X3v5jO2fI+f49H8AAt7X9vne/B359e1f57g2B/3i/5H+lD3P1sT+/G/3/Xffx3mN3//0P/+u2v3612A+G3wN1X9e4/31693e5v/i//sWv3XzJvX92/68Bf3r399qX/b042d3N6qfud4/7O0+/bL/m3g9p19/6R59/3zO+p+2Bf+i91L672P3X257uT3e3R38X3Bv6D38/fH7f6e6x559e3Ufu5sPvUe5rD7iPv2/S253+03X/uA+4e4n4v2f7U/v/P3uS96d7vze4x9/Xf+Iepf/07u31X4L/s6j9xX925z32Xq4f/0+/r+3n459/L+j2034e3579bvdP3p3p4x8P90N9x4m746P9m9x9f8f2+sN7o/3P33fU+w+m//x2Ivvb/p9P/8/1D3E/uO/u3fS//s1/09/b3f/5u9fM/Mv3Tvb++dK9P93tI/S+T9731x2368+7t888A/r9/s/y+3/hI/e1f9y/e/d/b2N6j73f98R35j+P3E24+333a39e3f/o+3/sP+43G0N/N3o3+/vUfeq+7e8m/f3GffIecveB40P3xP2/U/++f345+n2k6+2eX33f5/e3P3v3z740/sX436e+E/3Ivc8/f5e554T054v041/0e/+/0/f659Pve7+m78f4vj11Sfd/7/599e03u1v613d33XvA/erP6/1D/e3d7m4f/135933i7gTevRff23vG+/eNf+x6f7z4R/ffG4f+x/710e4+N37p/UvG7S39f3aP34l/2Mef124e/Y2B++fufn38+/y9+T/U82e/6/f1P/O7f8f94I16/p10z43v8zS+/XfD3f3v0eM/S3/13eK/B264bA3/D/C23q4A/S/U54GvhXmD8C/mft1E//2Lvx/4P594x78GvAn4e8Atf658XwY+A/xXmHf9GvAXgE8CvwzcfuKf60OAt/S3U5/1dD+aA12S0zC3A//+4eO5vA683X9A3Ove+9f4aOBdwM/O3K/uBf4lX9I94Jfw41e/A3e33B53m11S/x3a7qT7X9X2EPh/mvu9a/14z2v3e96/zLw2vGf8+G3/I/AnI4+/8D9X/iXwef//0I/p9ePZ/eF+t+138fS+/2f/u3/aPef5E3z/a3+/a++uS44++eJ3mX/vT4d732Aed8e03eU6k/3x7i9kH//OqM23kG28/Rvf+I/u0vU9A++sS0D2S2c+5x7rNef5x7418pX97y3/9K9E33e+T91/aZ++M139Xqrvf/S4O++w++f+47//P//+1//+P2+/3f363v+/C2H90T2fM/v5691I3e34bvd+/1v3/E/e4Lp3P14Dvt9fA4+c/j3wA8Arwf8/An4L+Dzw3cBzwI+S/D58L/CdwM8BDwIvB/4rI/kR/f3uA168f7Pq9pP3m28NngJ/aAzeO+fE++6L4A8B95s5A/zB4Jp/y/A5P/Cbf2559X/f2f5M6o3Oa/a5D2P/33k1eA+3I/23wE3An3B3e/494A/P3WJ44X4s8J9vX9kL9xO//9j7381/4fGf8/587v2A/vHvv3f/3j72H83j/jW9x+Gf8XG/Bf3+qP6G/x5/543mcfj94M//mfsL/kS94v+/f6v79/jBf4C3j3+S92D+i0d494z//+uGce520zGev+vcf23d/53m9d4E76A3//8s4/953K/3A/q/A3fN5/036j0A/9+R+33w24DPAq8HfuZ0/m74X0/qfuR4GfhXfD/v//z5X+C7vXf50a8A33i/18/C48F53S92X34qP0f/U/XG0S93x/u1e1X1+b/4+7E/3d2m9+d6E+/20/v07+f+7v65/mvdP6R72p1/zRvtOaO7M/2P/i7e/XvAdf3S/T/6x0L3M/0i+/745t/f33f671+Tf6r/a04A4T83eGfe4e9vO/+3eNfdf9a0f+k73p+25d+f9I3k/pX3913X/fI++73q8iXfE7y6v+/P96pI1/d7vfeI14D7eA9f/L0/3P2p+822L97jHnnfx+/783DvdG+89196b/d3/18c/q95f1r354vA9/fX+/l+/Nf0E7A6s8fv2L0i2n5S3+Mefy2+a/eeC//p6I+I34e+/eP71p/3l74/59/vXw/3q7v98/6pL++T/4j74XyXf2+oP9Tvd7/yXg64H71H3e3y3o/O9o+e/p0S0v4yfnxM3Lve3pPueb2Lve+P8J/H4P//8M853/v4r3p/2mXv7572iUj33Mfdne/v//A/xUvd930X/L3X636H24933a3j89bZ+U9e94HfvSdu39+f4S/fXvN5v3vE2//3i/8z7Uvvp6vvD7qL1Bv616/7/vI/34//a4q3kPve+S70p39v7p708uL5+8+vvea/A5IByEAZwM+AnwN4N/5X33w24C/Anwb+L3A3fB/j/e+9P3M8a33/x4/BPwf5M8v/1D4LPA24Pv7253/H3C9S//28E/655fP9r//s/rnvPj3v92f7X3lve7/4+/sX18e776a30//c/L3H37y+yI+/U1f2L//qfe4/4f2L//j+8mfe8L399P95b0v31f6m96/9+kM/1l/M95N94Z3/z6O9xH/6SOf7R/f8D2k66X7d066u9fU/c3s6/353/Yf9S0e/6n3Nffq3i/j94l47mTv0v4M1XvG//mG/9S/xX7mYf3Lp737s6i9IfeO+P5N5fBvfA44/b3C+8O5u0j/9D4Afgz4yP5N4o/D/y+B30oA1d1/G8d49xzwO8D3A5/054eBf5f3e/Xf/T2p+18D/5P341/s3mzeN/33/7d9H394v4/r5m7r0iX/83PIn39q92j3/cOdfvxf+/35p3u2v4v24/veE29XmN86Bvh/6N+zHwf+KPhH4C+C30sS6L2Xv3I34P8P8E/s4+3A32XvjvgDfgX4q/AnvP915E8mOef6z/m9s3vP3n3P+q1/28H3L7y489IeI3s630v8937l++479v++7c7veL2/m9f3z/G+O+/928e/6/m+/kXf/OcvfeO11x6O8P0M8K9InwI+Qe978sD/q20e+P0EWP232P++7289fS/pT7yv7+9m/+4m/j+/cffvNveA2xvf/vXbS3e959ff/9m/+e7bvvSdd3+l6bfe+dYr/4d7/+1/+U/e+8Ove27A23AeeD/9X9u6l/SjD4Af9p8E2w/+X879x81fBP4eAakP3p/eI4/f/mX4v7N796D503H++3XvPqN761uI/d6f3L3/3Pve//XkL3m7/d20vnvB/f2+71++573v/i2ffE/O3f7+d884A4znh15z34X/+d6x1fD0T+/z6b26vL48A14JvBD4x8D/3B/vTf+iN/Xn/c/pLwbvAf4L9s//f8b2mN/jT/2p4X4f15z3692z/+P5p//k9fGf1T0m/C1/Otrj2X83f0f72/v15u7a5e4f7v/xX3/qJ9716h+869M/0T82vO2m/23z3//A+9/8c2/8S7edfvU99w0x/+6/7t8A//y+7m03/m237//1r1//zHve9rU3fe+/+7/e8d5X/bNff39yP+/53jXbA5+e/E14e8/XpL9O/4Pef0C/v3i8d9/o19290a19r3uA2/v/q1/736+G129e/yXwS//Xv+u+Xvd+v22/vne912/+XwI/+R+/+/+y1/v6yvd3b2S/+O7/u3cO3f2/9b7P//A/x779q5/A3mP3L/n2m3938j1y/0z2T3/a7bS+8/U70/o13Uf99Ym3N4GvAt8G/B8z+3b934v86jS/16S3fBtwy34+8I/y8x//f8sL//vfe+N1/+J7A9mXf7iA8x8/786H3nnlHz/7LneSvx/u+X2yA2R1qS/3fQf0/vBfI3nvL//v6u9S7e1L5L/vH9/3e39097q75z0z/tS3j3eP3X3/P3Xvn1/4S+51f9/6yNvdD5u95y7zE3S725ve7t74f33vFmD+G+x6kP3+I7mbeN+P/Xl5d0//P/c4I/Y/X7eXN764x8fe/Z+7e3/aXbN9u+6U/aX34s7u/5M+iP12+2f6D3X9b7mzeXyPe/693H5s9i/1v/O9X4D7wzP7m/f2UfB8+I/O7139B+q/Jv2f/hvv/86P2P/e4v8D7/7+7fP8u/LneZ77x8p/E4A4PqI/An30A3p1aO//9p/Uvf3/b3/u96e3G98fDzeA71L834D251m3A+9vf1f9L9LfnP+7/q/2717p/s+8z9235v/f9o98H4f9N/eP/87y56X0L/N31f32q/fWf/xP3L/t/53eP/6T/m3+D+1ff+J/9f4M9qf7E/f+0+/8y3i3f49v/oE/+dO///fN35+oewO6A/+j/5Gef8G4+/e+/T+H5Ivx9/33i36v3A8v+r3zN/3r5v4A694v1m9fvvfF92I6zff27yXvA78e/C3gv87fNfpL4K/lP3f+X+G/3s+95I+83y98T4K//5i/d/vj+G9I6e3e3b0TfIn7v8I7pbf3D4G/BHw4vQ1+E5j+jS59oXb/O+/f0XkX/j9w59S9+v/mP+fM4P/Ff+f3eP/3k7v/3+9eL133Gfd3SdfXpTvfI/vve++4v7m773L3uPfevf24+/16sXf52/5v/x+m0oX4/88S45EAAAAASUVORK5CYII=";
+  <!-- ========================================== -->
+  <!-- MODAL: VISUALIZAR / EXPORTAR FICHA COMPLETA -->
+  <!-- ========================================== -->
+  <div id="modal-ficha" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto no-print">
+    <div class="bg-white rounded-2xl max-w-4xl w-full p-6 md:p-8 max-h-[90vh] overflow-y-auto relative shadow-2xl">
+      
+      <!-- Topo Modal -->
+      <div class="flex justify-between items-center border-b pb-4 mb-6">
+        <h3 class="text-lg font-bold text-slate-900">Ficha Completa de Inscrição</h3>
+        <button onclick="fecharModal()" class="text-slate-400 hover:text-slate-700 font-bold text-xl px-2">&times;</button>
+      </div>
 
-    // CREDENCIAIS DA EQUIPA
+      <!-- Conteúdo da Ficha Formatado para PDF/Leitura -->
+      <div id="conteudo-modal-ficha" class="bg-white p-6 border rounded-xl space-y-4 text-xs md:text-sm">
+      </div>
+
+      <!-- Ações do Modal -->
+      <div class="mt-6 flex justify-end gap-3 border-t pt-4">
+        <button onclick="fecharModal()" class="px-4 py-2 text-xs font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition">
+          Fechar
+        </button>
+        <button id="btn-export-modal-pdf" onclick="" class="px-4 py-2 text-xs font-semibold text-white bg-black hover:bg-neutral-800 rounded-lg shadow-sm transition flex items-center gap-2">
+          📄 Descarregar PDF desta Ficha
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // CREDENCIAIS DA EQUIPA (USERNAMES SIMPLES)
     const USUARIOS_AUTORIZADOS = {
-      "diogosendim@academicos.pt": { pass: "FCA2026!Presidente", nome: "Diogo Sendim (Presidente)" },
-      "carlosmartins@academicos.pt": { pass: "FCA2026!DirTecnico", nome: "Carlos Martins (Diretor Técnico)" },
-      "hamiltonjunior@academicos.pt": { pass: "FCA2026!AdminHam", nome: "Hamilton Junior (Informática)" },
-      "pedropavesi@academicos.pt": { pass: "FCA2026!AdminPavesi", nome: "Pedro Pavesi (Informática)" }
+      "diogosendim": { pass: "FCA2026!Presidente", nome: "Diogo Sendim (Presidente)" },
+      "carlosmartins": { pass: "FCA2026!DirTecnico", nome: "Carlos Martins (Diretor Técnico)" },
+      "hamiltonjunior": { pass: "FCA2026!AdminHam", nome: "Hamilton Junior (Informática)" },
+      "pedropavezzi": { pass: "FCA2026!AdminPavezzi", nome: "Pedro Pavezzi (Informática)" }
     };
 
-    // CHAVES DO FIREBASE DA SUA IMAGEM
+    // CHAVES DO FIREBASE
     const firebaseConfig = {
       apiKey: "AiZaSyCWOG6iBrpjimYapkxK9MXs5iHSBY-vEzs",
       authDomain: "insricoesacademicos.firebaseapp.com",
@@ -487,12 +498,58 @@
           <td class="p-3">${item.dataNascimento || '-'}</td>
           <td class="p-3">${item.nif || '-'}</td>
           <td class="p-3">${item.telefone || '-'}</td>
-          <td class="p-3 no-print text-center">
+          <td class="p-3 no-print text-center flex justify-center gap-3">
+            <button onclick="abrirFichaModal('${item.id}')" class="text-indigo-600 hover:text-indigo-800 font-bold" title="Ver e Gerar PDF Completo">📄</button>
             <button onclick="eliminarAtleta('${item.id}')" class="text-red-600 hover:text-red-800 font-bold" title="Eliminar">🗑️</button>
           </td>
         `;
         tbody.appendChild(tr);
       });
+    }
+
+    // ABRIR E PREENCHER MODAL COM FICHA COMPLETA
+    function abrirFichaModal(id) {
+      const atleta = listaAtletasGeral.find(a => a.id === id);
+      if (!atleta) return;
+
+      const container = document.getElementById('conteudo-modal-ficha');
+      container.innerHTML = `
+        <div class="flex items-center gap-4 border-b pb-4 mb-4">
+          <img src="logo.png" class="w-12 h-12 object-contain" alt="Logo">
+          <div>
+            <h4 class="font-bold text-slate-900 text-base">${atleta.nome || '-'}</h4>
+            <p class="text-xs text-slate-500">Ficha de Inscrição • FC Académicos 2026/2027</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div><strong>Escalão:</strong> ${atleta.escalao || '-'}</div>
+          <div><strong>Licença FPV:</strong> ${atleta.licenca || 'Pendente'}</div>
+          <div><strong>Data de Nascimento:</strong> ${atleta.dataNascimento || '-'}</div>
+          <div><strong>Compromisso Escolar:</strong> ${atleta.compromissoEscolar || '-'}</div>
+          <div><strong>Nacionalidade:</strong> ${atleta.nacionalidade || '-'}</div>
+          <div><strong>Naturalidade:</strong> ${atleta.naturalidade || '-'}</div>
+          <div><strong>Nome do Pai:</strong> ${atleta.nomePai || '-'}</div>
+          <div><strong>Nome da Mãe:</strong> ${atleta.nomeMae || '-'}</div>
+          <div><strong>N.° Doc. Identificação:</strong> ${atleta.documentoId || '-'}</div>
+          <div><strong>Validade Doc.:</strong> ${atleta.validadeDoc || '-'}</div>
+          <div><strong>NIF:</strong> ${atleta.nif || '-'}</div>
+          <div><strong>N.° Utente Saúde:</strong> ${atleta.numeroUtente || '-'}</div>
+          <div><strong>Telefone:</strong> ${atleta.telefone || '-'}</div>
+          <div><strong>Código Postal:</strong> ${atleta.codigoPostal || '-'}</div>
+          <div class="col-span-2"><strong>Morada:</strong> ${atleta.morada || '-'}</div>
+        </div>
+      `;
+
+      document.getElementById('btn-export-modal-pdf').onclick = function() {
+        gerarPDFDiv('conteudo-modal-ficha', atleta.nome);
+      };
+
+      document.getElementById('modal-ficha').classList.remove('hidden');
+    }
+
+    function fecharModal() {
+      document.getElementById('modal-ficha').classList.add('hidden');
     }
 
     function filtrarTabela() {
@@ -525,14 +582,14 @@
       document.getElementById('nacionalidade').value = "Portuguesa";
     }
 
-    // GERAÇÃO DE PDF
-    function gerarPDFIndividual() {
-      const element = document.getElementById('form-container');
-      const nomeAtleta = document.getElementById('nome').value || 'Atleta';
+    // FUNÇÃO DE GERAÇÃO DE PDF
+    function gerarPDFDiv(elementId, nomeAtleta) {
+      const element = document.getElementById(elementId);
+      const nomeFinal = nomeAtleta || 'Atleta';
 
       const opt = {
         margin: [6, 6, 6, 6],
-        filename: `Ficha_Atleta_${nomeAtleta.replace(/\s+/g, '_')}.pdf`,
+        filename: `Ficha_Atleta_${nomeFinal.replace(/\s+/g, '_')}.pdf`,
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { scale: 2, useCORS: true },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }

@@ -87,7 +87,7 @@
           <img id="club-logo" src="logo.png" alt="FC Académicos" class="max-h-full max-w-full object-contain">
         </div>
         <div>
-          <div class="text-xs font-semibold tracking-widest text-neutral-400 uppercase">FC ACADÉMICOS · ÉPOCA 2026 / 2027</div>
+          <div class="text-xs font-semibold tracking-widest text-neutral-400 uppercase">FC ACADÉMICOS · ÉPOKA 2026 / 2027</div>
           <h1 class="text-2xl md:text-3xl font-bold text-white mt-0.5">Ficha de Inscrição de Atleta</h1>
           <p class="text-xs text-neutral-400 mt-1 max-w-2xl">
             Preencha os dados do/a atleta. Pode guardar o registo na base de dados para consulta e imprimir ou exportar a ficha em PDF.
@@ -117,6 +117,12 @@
       <section id="sec-inscricao" class="block">
         <div id="form-container" class="print-card bg-white rounded-2xl shadow-sm border border-slate-200/80 p-6 md:p-10 max-w-5xl mx-auto">
           
+          <!-- BANNER DE AVISO DE EDIÇÃO -->
+          <div id="banner-edicao" class="hidden mb-6 p-4 bg-amber-50 border border-amber-200 rounded-xl flex justify-between items-center text-xs text-amber-800">
+            <span class="font-medium">⚠️ A editar a ficha de: <strong id="nome-atleta-editando"></strong></span>
+            <button type="button" onclick="cancelarEdicao()" class="text-amber-900 underline hover:no-underline font-semibold">Cancelar Edição</button>
+          </div>
+
           <form id="athleteForm" onsubmit="salvarAtleta(event)" class="space-y-6">
             
             <div>
@@ -226,7 +232,7 @@
             <div class="no-print pt-6 border-t border-slate-100 flex flex-wrap items-center gap-3">
               <button type="submit" id="btnSalvar" class="bg-black hover:bg-neutral-800 text-white font-medium text-xs px-5 py-3 rounded-lg shadow-sm flex items-center gap-2 transition">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 002-2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
-                Guardar na base de dados
+                <span id="btnSalvarTexto">Guardar na base de dados</span>
               </button>
 
               <button type="button" onclick="gerarPDFDiv('form-container', document.getElementById('nome').value)" class="bg-white hover:bg-slate-50 text-slate-800 font-medium text-xs px-5 py-3 rounded-lg border border-slate-300 shadow-sm flex items-center gap-2 transition">
@@ -394,6 +400,7 @@
     const db = firebase.firestore();
 
     let listaAtletasGeral = [];
+    let atletaIdEditando = null; // Guarda o ID se estivemos a editar
 
     // NAVEGAÇÃO DE ABAS
     function mudarAba(aba) {
@@ -434,12 +441,13 @@
       document.getElementById('login-pass').value = '';
     }
 
-    // SUBMETER DADOS PARA FIREBASE
+    // SUBMETER DADOS PARA FIREBASE (CRIAR OU EDITAR)
     async function salvarAtleta(event) {
       event.preventDefault();
       const btn = document.getElementById('btnSalvar');
+      const btnTexto = document.getElementById('btnSalvarTexto');
       btn.disabled = true;
-      btn.innerText = "A guardar...";
+      btnTexto.innerText = "A guardar...";
 
       const dadosAtleta = {
         nome: document.getElementById('nome').value,
@@ -458,20 +466,67 @@
         telefone: document.getElementById('telefone').value,
         codigoPostal: document.getElementById('codigoPostal').value,
         morada: document.getElementById('morada').value,
-        criadoEm: firebase.firestore.FieldValue.serverTimestamp()
+        atualizadoEm: firebase.firestore.FieldValue.serverTimestamp()
       };
 
       try {
-        await db.collection('atletas').add(dadosAtleta);
-        alert('Ficha de atleta guardada com sucesso no banco de dados!');
+        if (atletaIdEditando) {
+          // ATUALIZAR REGISTO EXISTENTE
+          await db.collection('atletas').doc(atletaIdEditando).update(dadosAtleta);
+          alert('Ficha de atleta atualizada com sucesso!');
+        } else {
+          // CRIAR NOVO REGISTO
+          dadosAtleta.criadoEm = firebase.firestore.FieldValue.serverTimestamp();
+          await db.collection('atletas').add(dadosAtleta);
+          alert('Ficha de atleta guardada com sucesso no banco de dados!');
+        }
         limparFormulario();
       } catch (error) {
         console.error("Erro no Firebase:", error);
         alert('Erro ao guardar na base de dados. Tente novamente.');
       } finally {
         btn.disabled = false;
-        btn.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 002-2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg> Guardar na base de dados`;
+        btnTexto.innerText = atletaIdEditando ? "Atualizar Ficha de Atleta" : "Guardar na base de dados";
       }
+    }
+
+    // CARREGAR DADOS DO ATLETA NO FORMULÁRIO PARA EDIÇÃO
+    function editarAtleta(id) {
+      const atleta = listaAtletasGeral.find(a => a.id === id);
+      if (!atleta) return;
+
+      atletaIdEditando = id;
+
+      // Preencher os campos do formulário
+      document.getElementById('nome').value = atleta.nome || '';
+      document.getElementById('licenca').value = atleta.licenca || '';
+      document.getElementById('compromissoEscolar').value = atleta.compromissoEscolar || '';
+      document.getElementById('dataNascimento').value = atleta.dataNascimento || '';
+      document.getElementById('escalao').value = atleta.escalao || '';
+      document.getElementById('nacionalidade').value = atleta.nacionalidade || 'Portuguesa';
+      document.getElementById('naturalidade').value = atleta.naturalidade || '';
+      document.getElementById('nomePai').value = atleta.nomePai || '';
+      document.getElementById('nomeMae').value = atleta.nomeMae || '';
+      document.getElementById('documentoId').value = atleta.documentoId || '';
+      document.getElementById('validadeDoc').value = atleta.validadeDoc || '';
+      document.getElementById('nif').value = atleta.nif || '';
+      document.getElementById('numeroUtente').value = atleta.numeroUtente || '';
+      document.getElementById('telefone').value = atleta.telefone || '';
+      document.getElementById('codigoPostal').value = atleta.codigoPostal || '';
+      document.getElementById('morada').value = atleta.morada || '';
+
+      // Atualizar interface
+      document.getElementById('banner-edicao').classList.remove('hidden');
+      document.getElementById('nome-atleta-editando').innerText = atleta.nome || '';
+      document.getElementById('btnSalvarTexto').innerText = 'Atualizar Ficha de Atleta';
+
+      // Mudar para a aba do formulário
+      mudarAba('inscricao');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function cancelarEdicao() {
+      limparFormulario();
     }
 
     // CONSULTAR DADOS ADMIN
@@ -515,6 +570,7 @@
           <td class="p-3">${item.nif || '-'}</td>
           <td class="p-3">${item.telefone || '-'}</td>
           <td class="p-3 no-print text-center flex justify-center gap-3">
+            <button onclick="editarAtleta('${item.id}')" class="text-amber-600 hover:text-amber-800 font-bold" title="Editar Ficha">✏️</button>
             <button onclick="abrirFichaModal('${item.id}')" class="text-indigo-600 hover:text-indigo-800 font-bold" title="Ver e Gerar PDF Completo">📄</button>
             <button onclick="eliminarAtleta('${item.id}')" class="text-red-600 hover:text-red-800 font-bold" title="Eliminar">🗑️</button>
           </td>
@@ -592,10 +648,13 @@
       }
     }
 
-    // LIMPAR FORMULÁRIO
+    // LIMPAR FORMULÁRIO E RESET AO MODO DE EDIÇÃO
     function limparFormulario() {
       document.getElementById('athleteForm').reset();
       document.getElementById('nacionalidade').value = "Portuguesa";
+      atletaIdEditando = null;
+      document.getElementById('banner-edicao').classList.add('hidden');
+      document.getElementById('btnSalvarTexto').innerText = "Guardar na base de dados";
     }
 
     // FUNÇÃO DE GERAÇÃO DE PDF

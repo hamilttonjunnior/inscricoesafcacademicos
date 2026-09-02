@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema de Inscrições e Gestão de Atletas - Académicos / FPV</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- html2pdf.js para exportação de PDFs -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <!-- SDK do Firebase (Compatível) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+  <style>
+    @media print {
+      .no-print { display: none !important; }
+      body { background: white; padding: 0; }
+      .print-area { box-shadow: none !important; border: none !important; width: 100% !important; max-width: 100% !important; }
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans min-h-screen py-6 px-4">
+
+  <!-- Cabeçalho Principal -->
+  <header class="max-w-6xl mx-auto mb-6 flex justify-between items-center no-print bg-slate-900 text-white p-4 rounded-xl shadow-md">
+    <div class="flex items-center gap-3">
+      <div class="bg-indigo-600 font-bold px-3 py-1.5 rounded-lg text-sm tracking-wider">FCA</div>
+      <span class="font-semibold text-sm md:text-base">FC Académicos • Portal de Inscrições</span>
+    </div>
+    <div class="flex gap-2">
+      <button onclick="mudarAba('inscricao')" id="tab-inscricao" class="px-4 py-2 text-sm font-medium rounded-lg bg-indigo-600 text-white transition">
+        Ficha de Inscrição
+      </button>
+      <button onclick="mudarAba('admin')" id="tab-admin" class="px-4 py-2 text-sm font-medium rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition">
+        Painel de Gestão (Admin)
+      </button>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto">
+
+    <!-- ========================================== -->
+    <!-- SECÇÃO 1: FORMULÁRIO DE INSCRIÇÃO DO ATLETA -->
+    <!-- ========================================== -->
+    <section id="sec-inscricao" class="block">
+      <div id="form-container" class="print-area bg-white rounded-xl shadow-lg border border-slate-200 p-6 md:p-10 max-w-4xl mx-auto">
+        
+        <div class="border-b border-slate-200 pb-6 mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div>
+            <h1 class="text-2xl md:text-3xl font-bold text-slate-900">Ficha de Inscrição de Atleta</h1>
+            <p class="text-sm text-slate-500 mt-1">Época Desportiva 2025-2026 • Federação Portuguesa de Voleibol</p>
+          </div>
+          <div class="no-print flex gap-3">
+            <button type="button" onclick="gerarPDFIndividual()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-4 py-2 rounded-lg shadow transition flex items-center gap-2 text-sm">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+              Descarregar PDF
+            </button>
+          </div>
+        </div>
+
+        <form id="athleteForm" class="space-y-6" onsubmit="salvarAtleta(event)">
+          
+          <!-- Dados Desportivos -->
+          <div class="bg-indigo-50/60 p-5 rounded-lg border border-indigo-100">
+            <h2 class="text-base font-semibold text-indigo-900 mb-3 flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-indigo-600"></span>
+              Informações de Inscrição
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Licença N.° (FPV)</label>
+                <input type="text" id="licenca" placeholder="Se já inscrito anteriormente" class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Escalão de Inscrição *</label>
+                <select id="escalao" required class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500">
+                  <option value="">Selecione...</option>
+                  <option value="Minis A">Minis A</option>
+                  <option value="Minis B">Minis B</option>
+                  <option value="Iniciadas/os">Iniciadas / Iniciados</option>
+                  <option value="Cadetes">Cadetes</option>
+                  <option value="Juvenis">Juvenis</option>
+                  <option value="Juniores">Juniores</option>
+                  <option value="Seniores">Seniores</option>
+                  <option value="Veteranos">Veteranos</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Compromisso Desporto Escolar *</label>
+                <select id="compromissoEscolar" required class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500">
+                  <option value="">Selecione...</option>
+                  <option value="Sim">Sim (Compromete-se a participar)</option>
+                  <option value="Não">Não</option>
+                  <option value="N/A">Não Aplicável</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Identificação -->
+          <div>
+            <h2 class="text-base font-semibold text-slate-900 mb-3 flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-slate-700"></span>
+              Dados Pessoais
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div class="md:col-span-2">
+                <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Nome Completo do/a Atleta *</label>
+                <input type="text" id="nome" required class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Data de Nascimento *</label>
+                <input type="date" id="dataNascimento" required class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Nacionalidade *</label>
+                <input type="text" id="nacionalidade" value="Portuguesa" required class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500">
+              </div>
+              <div class="md:col-span-2">
+                <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Naturalidade *</label>
+                <input type="text" id="naturalidade" placeholder="Freguesia / Concelho" required class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Nome do Pai</label>
+                <input type="text" id="nomePai" class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500">
+              </div>
+              <div class="md:col-span-2">
+                <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Nome da Mãe</label>
+                <input type="text" id="nomeMae" class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500">
+              </div>
+            </div>
+          </div>
+
+          <!-- Documentação e Contacto -->
+          <div>
+            <h2 class="text-base font-semibold text-slate-900 mb-3 flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-slate-700"></span>
+              Documentos e Morada
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">N° CC / Passaporte / Tít. Residência *</label>
+                <input type="text" id="documentoId" required class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Validade do Documento *</label>
+                <input type="date" id="validadeDoc" required class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">NIF *</label>
+                <input type="text" id="nif" required maxlength="9" placeholder="9 dígitos" class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">N° Utente de Saúde *</label>
+                <input type="text" id="numeroUtente" required class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500">
+              </div>
+              <div class="md:col-span-2">
+                <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Contacto Telefónico *</label>
+                <input type="tel" id="telefone" required placeholder="+351 9xx xxx xxx" class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500">
+              </div>
+              <div class="md:col-span-2">
+                <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Morada *</label>
+                <input type="text" id="morada" required placeholder="Rua, N.°, Andar" class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Código Postal *</label>
+                <input type="text" id="codigoPostal" required placeholder="4750-000" pattern="\d{4}-\d{3}" class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500">
+              </div>
+            </div>
+          </div>
+
+          <div class="no-print pt-6 border-t border-slate-200 flex justify-end gap-3">
+            <button type="submit" id="btnSalvar" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-6 py-2.5 rounded-lg shadow transition">
+              Submeter Inscrição
+            </button>
+          </div>
+
+        </form>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- SECÇÃO 2: PAINEL DE ADMINISTRAÇÃO / LOGIN  -->
+    <!-- ========================================== -->
+    <section id="sec-admin" class="hidden">
+      
+      <!-- Caixa de Login -->
+      <div id="admin-login-box" class="max-w-md mx-auto bg-white p-8 rounded-xl shadow-lg border border-slate-200 mt-10">
+        <h2 class="text-xl font-bold text-slate-900 text-center mb-1">Acesso Reservado</h2>
+        <p class="text-xs text-slate-500 text-center mb-6">Direção & Suporte Informático</p>
+        
+        <form onsubmit="autenticarAdmin(event)" class="space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">E-mail / Utilizador</label>
+            <input type="email" id="login-user" required placeholder="ex: carlosmartins@academicos.pt" class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Palavra-passe</label>
+            <input type="password" id="login-pass" required class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500">
+          </div>
+          <button type="submit" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-medium py-2.5 rounded-lg transition shadow">
+            Iniciar Sessão
+          </button>
+        </form>
+      </div>
+
+      <!-- Área de Consulta do Banco de Dados -->
+      <div id="admin-dashboard" class="hidden print-area bg-white p-6 md:p-8 rounded-xl shadow-lg border border-slate-200">
+        
+        <div class="no-print border-b border-slate-200 pb-5 mb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div>
+            <span id="user-badge" class="bg-indigo-100 text-indigo-800 text-xs font-semibold px-2.5 py-1 rounded-full uppercase">Sessão Ativa</span>
+            <h2 class="text-2xl font-bold text-slate-900 mt-2">Atletas Registados no Banco de Dados</h2>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <button onclick="window.print()" class="bg-slate-800 hover:bg-slate-900 text-white text-xs font-semibold px-3.5 py-2 rounded-lg flex items-center gap-1.5 transition">
+              🖨️ Imprimir Lista Geral
+            </button>
+            <button onclick="logoutAdmin()" class="bg-red-50 hover:bg-red-100 text-red-600 text-xs font-semibold px-3 py-2 rounded-lg border border-red-200 transition">
+              Sair
+            </button>
+          </div>
+        </div>
+
+        <!-- Filtros -->
+        <div class="no-print grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 bg-slate-50 p-4 rounded-lg border border-slate-200">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Pesquisar Nome / NIF</label>
+            <input type="text" id="filtro-pesquisa" onkeyup="filtrarTabela()" placeholder="Digite para procurar..." class="w-full rounded-md border border-slate-300 px-3 py-1.5 text-sm">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Filtrar por Escalão</label>
+            <select id="filtro-escalao" onchange="filtrarTabela()" class="w-full rounded-md border border-slate-300 px-3 py-1.5 text-sm">
+              <option value="">Todos os Escalões</option>
+              <option value="Minis A">Minis A</option>
+              <option value="Minis B">Minis B</option>
+              <option value="Iniciadas/os">Iniciadas / Iniciados</option>
+              <option value="Cadetes">Cadetes</option>
+              <option value="Juvenis">Juvenis</option>
+              <option value="Juniores">Juniores</option>
+              <option value="Seniores">Seniores</option>
+              <option value="Veteranos">Veteranos</option>
+            </select>
+          </div>
+          <div class="flex items-end">
+            <span id="total-registos" class="text-xs text-slate-500 font-semibold mb-2">Total de registos: 0</span>
+          </div>
+        </div>
+
+        <!-- Tabela -->
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-xs md:text-sm">
+            <thead>
+              <tr class="bg-slate-100 border-b border-slate-200 text-slate-700 font-bold uppercase">
+                <th class="p-3">Nome do Atleta</th>
+                <th class="p-3">Escalão</th>
+                <th class="p-3">Licença FPV</th>
+                <th class="p-3">Data Nasc.</th>
+                <th class="p-3">NIF</th>
+                <th class="p-3">Contacto</th>
+                <th class="p-3 no-print text-center">Ações</th>
+              </tr>
+            </thead>
+            <tbody id="tabela-atletas-body" class="divide-y divide-slate-200 text-slate-800">
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <script>
+    // ==========================================
+    // 1. CREDENCIAIS DOS UTILIZADORES
+    // ==========================================
+    const USUARIOS_AUTORIZADOS = {
+      "diogosendim@academicos.pt": { pass: "FCA2026!Presidente", nome: "Diogo Sendim (Presidente)" },
+      "carlosmartins@academicos.pt": { pass: "FCA2026!DirTecnico", nome: "Carlos Martins (Diretor Técnico)" },
+      "hamiltonjunior@academicos.pt": { pass: "FCA2026!AdminHam", nome: "Hamilton Junior (Informática)" },
+      "pedropavesi@academicos.pt": { pass: "FCA2026!AdminPavesi", nome: "Pedro Pavesi (Informática)" }
+    };
+
+    // ==========================================
+    // 2. CONFIGURAÇÃO REVELADA DO FIREBASE (DA IMAGEM)
+    // ==========================================
+    const firebaseConfig = {
+      apiKey: "AiZaSyCWOG6iBrpjimYapkxK9MXs5iHSBY-vEzs",
+      authDomain: "insricoesacademicos.firebaseapp.com",
+      projectId: "insricoesacademicos",
+      storageBucket: "insricoesacademicos.firebasestorage.app",
+      messagingSenderId: "1044921966369",
+      appId: "1:1044921966369:web:747cf42405e0c082866860",
+      measurementId: "G-D2GM4C92CE"
+    };
+
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    const db = firebase.firestore();
+
+    let listaAtletasGeral = [];
+
+    // ==========================================
+    // 3. CONTROLO DAS ABAS E LOGIN
+    // ==========================================
+    function mudarAba(aba) {
+      const secInscricao = document.getElementById('sec-inscricao');
+      const secAdmin = document.getElementById('sec-admin');
+      const tabInscricao = document.getElementById('tab-inscricao');
+      const tabAdmin = document.getElementById('tab-admin');
+
+      if (aba === 'inscricao') {
+        secInscricao.classList.remove('hidden');
+        secAdmin.classList.add('hidden');
+        tabInscricao.className = "px-4 py-2 text-sm font-medium rounded-lg bg-indigo-600 text-white transition";
+        tabAdmin.className = "px-4 py-2 text-sm font-medium rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition";
+      } else {
+        secInscricao.classList.add('hidden');
+        secAdmin.classList.remove('hidden');
+        tabAdmin.className = "px-4 py-2 text-sm font-medium rounded-lg bg-indigo-600 text-white transition";
+        tabInscricao.className = "px-4 py-2 text-sm font-medium rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 transition";
+      }
+    }
+
+    function autenticarAdmin(event) {
+      event.preventDefault();
+      const user = document.getElementById('login-user').value.trim().toLowerCase();
+      const pass = document.getElementById('login-pass').value;
+
+      if (USUARIOS_AUTORIZADOS[user] && USUARIOS_AUTORIZADOS[user].pass === pass) {
+        document.getElementById('admin-login-box').classList.add('hidden');
+        document.getElementById('admin-dashboard').classList.remove('hidden');
+        document.getElementById('user-badge').innerText = USUARIOS_AUTORIZADOS[user].nome;
+        carregarAtletas();
+      } else {
+        alert("Utilizador ou palavra-passe incorretos.");
+      }
+    }
+
+    function logoutAdmin() {
+      document.getElementById('admin-login-box').classList.remove('hidden');
+      document.getElementById('admin-dashboard').classList.add('hidden');
+      document.getElementById('login-pass').value = '';
+    }
+
+    // ==========================================
+    // 4. OPERAÇÕES FIRESTORE
+    // ==========================================
+    async function salvarAtleta(event) {
+      event.preventDefault();
+      const btn = document.getElementById('btnSalvar');
+      btn.disabled = true;
+      btn.innerText = "A submeter...";
+
+      const dadosAtleta = {
+        licenca: document.getElementById('licenca').value,
+        escalao: document.getElementById('escalao').value,
+        compromissoEscolar: document.getElementById('compromissoEscolar').value,
+        nome: document.getElementById('nome').value,
+        dataNascimento: document.getElementById('dataNascimento').value,
+        nacionalidade: document.getElementById('nacionalidade').value,
+        naturalidade: document.getElementById('naturalidade').value,
+        nomePai: document.getElementById('nomePai').value,
+        nomeMae: document.getElementById('nomeMae').value,
+        documentoId: document.getElementById('documentoId').value,
+        validadeDoc: document.getElementById('validadeDoc').value,
+        nif: document.getElementById('nif').value,
+        numeroUtente: document.getElementById('numeroUtente').value,
+        telefone: document.getElementById('telefone').value,
+        morada: document.getElementById('morada').value,
+        codigoPostal: document.getElementById('codigoPostal').value,
+        criadoEm: firebase.firestore.FieldValue.serverTimestamp()
+      };
+
+      try {
+        await db.collection('atletas').add(dadosAtleta);
+        alert('Inscrição efetuada e guardada na base de dados com sucesso!');
+        document.getElementById('athleteForm').reset();
+      } catch (error) {
+        console.error("Erro ao guardar no Firebase:", error);
+        alert('Ocorreu um erro ao guardar na base de dados.');
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "Submeter Inscrição";
+      }
+    }
+
+    async function carregarAtletas() {
+      const tbody = document.getElementById('tabela-atletas-body');
+      tbody.innerHTML = '<tr><td colspan="7" class="p-4 text-center text-slate-500">A carregar dados...</td></tr>';
+
+      try {
+        const snapshot = await db.collection('atletas').orderBy('criadoEm', 'desc').get();
+        listaAtletasGeral = [];
+        
+        snapshot.forEach(doc => {
+          listaAtletasGeral.push({ id: doc.id, ...doc.data() });
+        });
+
+        renderizarTabela(listaAtletasGeral);
+      } catch (error) {
+        console.error("Erro ao carregar dados:", error);
+        tbody.innerHTML = '<tr><td colspan="7" class="p-4 text-center text-red-500">Erro ao comunicar com o Firestore. Verifique se a coleção "atletas" existe.</td></tr>';
+      }
+    }
+
+    function renderizarTabela(dados) {
+      const tbody = document.getElementById('tabela-atletas-body');
+      document.getElementById('total-registos').innerText = `Total de registos: ${dados.length}`;
+      tbody.innerHTML = '';
+
+      if (dados.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="p-4 text-center text-slate-500">Nenhum atleta encontrado.</td></tr>';
+        return;
+      }
+
+      dados.forEach(item => {
+        const tr = document.createElement('tr');
+        tr.className = "hover:bg-slate-50 border-b border-slate-100";
+        tr.innerHTML = `
+          <td class="p-3 font-semibold text-slate-900">${item.nome || '-'}</td>
+          <td class="p-3">${item.escalao || '-'}</td>
+          <td class="p-3">${item.licenca || 'Pendente'}</td>
+          <td class="p-3">${item.dataNascimento || '-'}</td>
+          <td class="p-3">${item.nif || '-'}</td>
+          <td class="p-3">${item.telefone || '-'}</td>
+          <td class="p-3 no-print text-center">
+            <button onclick="eliminarAtleta('${item.id}')" class="text-red-600 hover:text-red-800 p-1 font-bold" title="Eliminar">🗑️</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function filtrarTabela() {
+      const termo = document.getElementById('filtro-pesquisa').value.toLowerCase();
+      const escalaoSelec = document.getElementById('filtro-escalao').value;
+
+      const filtrados = listaAtletasGeral.filter(item => {
+        const combinaNomeOuNif = (item.nome && item.nome.toLowerCase().includes(termo)) || (item.nif && item.nif.includes(termo));
+        const combinaEscalao = escalaoSelec === "" || item.escalao === escalaoSelec;
+        return combinaNomeOuNif && combinaEscalao;
+      });
+
+      renderizarTabela(filtrados);
+    }
+
+    async function eliminarAtleta(id) {
+      if (confirm("Deseja eliminar este registo permanentemente da base de dados?")) {
+        try {
+          await db.collection('atletas').doc(id).delete();
+          carregarAtletas();
+        } catch (err) {
+          alert("Erro ao eliminar o registo.");
+        }
+      }
+    }
+
+    // ==========================================
+    // 5. GERAÇÃO DE PDF INDIVIDUAL
+    // ==========================================
+    function gerarPDFIndividual() {
+      const element = document.getElementById('form-container');
+      const nomeAtleta = document.getElementById('nome').value || 'Atleta';
+
+      const opt = {
+        margin: [8, 8, 8, 8],
+        filename: `Ficha_Atleta_${nomeAtleta.replace(/\s+/g, '_')}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+
+      html2pdf().set(opt).from(element).save();
+    }
+  </script>
+</body>
+</html>

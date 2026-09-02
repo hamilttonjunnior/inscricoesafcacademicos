@@ -65,7 +65,7 @@
 
     .section-header {
       display: flex;
-      items-center;
+      align-items: center;
       gap: 0.5rem;
       font-size: 0.85rem;
       font-weight: 700;
@@ -82,6 +82,50 @@
       color: #64748b;
       margin-top: 0.35rem;
       line-height: 1.25;
+    }
+
+    /* ESTILOS ESPECÍFICOS PARA O POPUP / DOCUMENTO PDF IMPRESSO */
+    .pdf-document {
+      background: #ffffff;
+      color: #1e293b;
+      padding: 2.5rem;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+    }
+
+    .pdf-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid #0f172a;
+      padding-bottom: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .pdf-section-title {
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: #0284c7;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 0.25rem;
+      margin-top: 1.25rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .pdf-field-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .pdf-field-value {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #0f172a;
+      margin-top: 0.1rem;
     }
 
     @media print {
@@ -105,7 +149,7 @@
           <div class="text-[11px] font-bold tracking-widest text-sky-400 uppercase">FC ACADÉMICOS · ÉPOCA 2026 / 2027</div>
           <h1 class="text-2xl md:text-3xl font-extrabold text-white mt-0.5 tracking-tight">Ficha de Inscrição de Atleta</h1>
           <p class="text-xs text-slate-400 mt-1 max-w-2xl">
-            Preencha os dados do/a atleta. Pode guardar o registo na base de dados para consulta e imprimir ou exportar a ficha em PDF.
+            Preencha os dados do/a atleta. Ao submeter, o registo será guardado e será gerada a ficha oficial em PDF.
           </p>
         </div>
       </div>
@@ -275,12 +319,7 @@
             <div class="no-print pt-8 border-t border-slate-200 flex flex-wrap items-center gap-3">
               <button type="submit" id="btnSalvar" class="bg-slate-900 hover:bg-black text-white font-semibold text-xs px-6 py-3.5 rounded-xl shadow-md flex items-center gap-2 transition">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 002-2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path></svg>
-                <span id="btnSalvarTexto">Guardar na base de dados</span>
-              </button>
-
-              <button type="button" onclick="gerarPDFDiv('form-container', document.getElementById('nome').value)" class="bg-white hover:bg-slate-50 text-slate-800 font-semibold text-xs px-6 py-3.5 rounded-xl border border-slate-300 shadow-sm flex items-center gap-2 transition">
-                <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-                Imprimir / Guardar PDF
+                <span id="btnSalvarTexto">Guardar & Gerar Ficha em PDF</span>
               </button>
 
               <button type="button" onclick="limparFormulario()" class="bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold text-xs px-5 py-3.5 rounded-xl flex items-center gap-1.5 transition ml-auto">
@@ -389,28 +428,31 @@
   </main>
 
   <!-- ========================================== -->
-  <!-- MODAL: VISUALIZAR / EXPORTAR FICHA COMPLETA -->
+  <!-- MODAL POPUP: FICHA OFICIAL GERADA / PDF     -->
   <!-- ========================================== -->
-  <div id="modal-ficha" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto no-print">
-    <div class="bg-white rounded-2xl max-w-4xl w-full p-6 md:p-8 max-h-[90vh] overflow-y-auto relative shadow-2xl">
+  <div id="modal-ficha" class="hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto no-print">
+    <div class="bg-white rounded-3xl max-w-3xl w-full p-6 md:p-8 max-h-[92vh] overflow-y-auto relative shadow-2xl border border-slate-100">
       
       <!-- Topo Modal -->
-      <div class="flex justify-between items-center border-b pb-4 mb-6">
-        <h3 class="text-lg font-bold text-slate-900">Ficha Completa de Inscrição</h3>
-        <button onclick="fecharModal()" class="text-slate-400 hover:text-slate-700 font-bold text-xl px-2">&times;</button>
+      <div class="flex justify-between items-center border-b border-slate-100 pb-4 mb-4">
+        <div>
+          <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full">Registo Concluído</span>
+          <h3 class="text-lg font-extrabold text-slate-900 mt-1">Ficha Oficial de Inscrição</h3>
+        </div>
+        <button onclick="fecharModal()" class="text-slate-400 hover:text-slate-700 font-bold text-2xl px-2">&times;</button>
       </div>
 
-      <!-- Conteúdo da Ficha Formatado para PDF/Leitura -->
-      <div id="conteudo-modal-ficha" class="bg-white p-6 border rounded-xl space-y-4 text-xs md:text-sm">
+      <!-- Conteúdo Formatado do Documento A4 Oficial -->
+      <div id="conteudo-modal-ficha" class="pdf-document border rounded-2xl shadow-sm">
       </div>
 
       <!-- Ações do Modal -->
-      <div class="mt-6 flex justify-end gap-3 border-t pt-4">
-        <button onclick="fecharModal()" class="px-4 py-2 text-xs font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition">
+      <div class="mt-6 flex flex-wrap justify-end gap-3 border-t border-slate-100 pt-4">
+        <button onclick="fecharModal()" class="px-5 py-2.5 text-xs font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition">
           Fechar
         </button>
-        <button id="btn-export-modal-pdf" onclick="" class="px-4 py-2 text-xs font-semibold text-white bg-black hover:bg-neutral-800 rounded-lg shadow-sm transition flex items-center gap-2">
-          📄 Descarregar PDF desta Ficha
+        <button id="btn-export-modal-pdf" onclick="" class="px-6 py-2.5 text-xs font-semibold text-white bg-slate-900 hover:bg-black rounded-xl shadow-md transition flex items-center gap-2">
+          📄 Descarregar Ficha em PDF
         </button>
       </div>
 
@@ -484,7 +526,7 @@
       document.getElementById('login-pass').value = '';
     }
 
-    // SUBMETER DADOS PARA FIREBASE (CRIAR OU EDITAR)
+    // SUBMETER DADOS PARA FIREBASE E ABRIR POPUP DE PDF
     async function salvarAtleta(event) {
       event.preventDefault();
       const btn = document.getElementById('btnSalvar');
@@ -515,20 +557,143 @@
       try {
         if (atletaIdEditando) {
           await db.collection('atletas').doc(atletaIdEditando).update(dadosAtleta);
-          alert('Ficha de atleta atualizada com sucesso!');
         } else {
           dadosAtleta.criadoEm = firebase.firestore.FieldValue.serverTimestamp();
-          await db.collection('atletas').add(dadosAtleta);
-          alert('Ficha de atleta guardada com sucesso no banco de dados!');
+          const docRef = await db.collection('atletas').add(dadosAtleta);
+          dadosAtleta.id = docRef.id;
         }
+
+        // ABRIR O POPUP COM A FICHA OFICIAL FORMATADA
+        abrirFichaModalComDados(dadosAtleta);
         limparFormulario();
       } catch (error) {
         console.error("Erro no Firebase:", error);
         alert('Erro ao guardar na base de dados. Tente novamente.');
       } finally {
         btn.disabled = false;
-        btnTexto.innerText = atletaIdEditando ? "Atualizar Ficha de Atleta" : "Guardar na base de dados";
+        btnTexto.innerText = "Guardar & Gerar Ficha em PDF";
       }
+    }
+
+    // PREENCHER E ABRIR O POPUP DE DOCUMENTO OFICIAL
+    function abrirFichaModalComDados(atleta) {
+      const container = document.getElementById('conteudo-modal-ficha');
+      
+      container.innerHTML = `
+        <div class="pdf-header">
+          <div class="flex items-center gap-4">
+            <img src="logo.png" class="w-14 h-14 object-contain" alt="FC Académicos">
+            <div>
+              <div class="text-[10px] font-bold tracking-widest text-slate-500 uppercase">FC ACADÉMICOS · ÉPOCA 2026/2027</div>
+              <h2 class="text-lg font-black text-slate-900 uppercase tracking-tight">Ficha de Inscrição de Atleta</h2>
+            </div>
+          </div>
+          <div class="text-right">
+            <span class="text-[10px] font-extrabold text-slate-400 block uppercase tracking-wider">Escalão</span>
+            <span class="text-sm font-black text-sky-600 uppercase">${atleta.escalao || '-'}</span>
+          </div>
+        </div>
+
+        <div>
+          <div class="pdf-section-title">1. Dados Pessoais do Atleta</div>
+          <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+            <div class="col-span-2 md:col-span-3">
+              <div class="pdf-field-label">Nome Completo</div>
+              <div class="pdf-field-value text-base">${atleta.nome || '-'}</div>
+            </div>
+            <div>
+              <div class="pdf-field-label">Licença FPV</div>
+              <div class="pdf-field-value">${atleta.licenca || 'Pendente'}</div>
+            </div>
+            <div>
+              <div class="pdf-field-label">Data de Nascimento</div>
+              <div class="pdf-field-value">${atleta.dataNascimento || '-'}</div>
+            </div>
+            <div>
+              <div class="pdf-field-label">Desporto Escolar</div>
+              <div class="pdf-field-value">${atleta.compromissoEscolar || '-'}</div>
+            </div>
+            <div>
+              <div class="pdf-field-label">Nacionalidade</div>
+              <div class="pdf-field-value">${atleta.nacionalidade || '-'}</div>
+            </div>
+            <div>
+              <div class="pdf-field-label">Naturalidade</div>
+              <div class="pdf-field-value">${atleta.naturalidade || '-'}</div>
+            </div>
+            <div>
+              <div class="pdf-field-label">Contacto Telefónico</div>
+              <div class="pdf-field-value">${atleta.telefone || '-'}</div>
+            </div>
+            <div class="col-span-2 md:col-span-1">
+              <div class="pdf-field-label">Nome do Pai</div>
+              <div class="pdf-field-value">${atleta.nomePai || '-'}</div>
+            </div>
+            <div class="col-span-2 md:col-span-2">
+              <div class="pdf-field-label">Nome da Mãe</div>
+              <div class="pdf-field-value">${atleta.nomeMae || '-'}</div>
+            </div>
+          </div>
+
+          <div class="pdf-section-title">2. Documentação & Saúde</div>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div>
+              <div class="pdf-field-label">Doc. Identificação</div>
+              <div class="pdf-field-value">${atleta.documentoId || '-'}</div>
+            </div>
+            <div>
+              <div class="pdf-field-label">Validade Doc.</div>
+              <div class="pdf-field-value">${atleta.validadeDoc || '-'}</div>
+            </div>
+            <div>
+              <div class="pdf-field-label">NIF</div>
+              <div class="pdf-field-value">${atleta.nif || '-'}</div>
+            </div>
+            <div>
+              <div class="pdf-field-label">N.° Utente de Saúde</div>
+              <div class="pdf-field-value">${atleta.numeroUtente || '-'}</div>
+            </div>
+          </div>
+
+          <div class="pdf-section-title">3. Residência & Localização</div>
+          <div class="grid grid-cols-3 gap-3">
+            <div>
+              <div class="pdf-field-label">Código Postal</div>
+              <div class="pdf-field-value">${atleta.codigoPostal || '-'}</div>
+            </div>
+            <div class="col-span-2">
+              <div class="pdf-field-label">Morada Residencial</div>
+              <div class="pdf-field-value">${atleta.morada || '-'}</div>
+            </div>
+          </div>
+
+          <div class="mt-8 pt-6 border-t border-slate-200 grid grid-cols-2 gap-8 text-center text-[10px] text-slate-500">
+            <div>
+              <div class="border-b border-slate-300 mb-1 h-8"></div>
+              <span>Assinatura do Atleta / Encarregado de Educação</span>
+            </div>
+            <div>
+              <div class="border-b border-slate-300 mb-1 h-8"></div>
+              <span>Validação FC Académicos</span>
+            </div>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('btn-export-modal-pdf').onclick = function() {
+        gerarPDFDiv('conteudo-modal-ficha', atleta.nome);
+      };
+
+      document.getElementById('modal-ficha').classList.remove('hidden');
+    }
+
+    function abrirFichaModal(id) {
+      const atleta = listaAtletasGeral.find(a => a.id === id);
+      if (atleta) abrirFichaModalComDados(atleta);
+    }
+
+    function fecharModal() {
+      document.getElementById('modal-ficha').classList.add('hidden');
     }
 
     // CARREGAR DADOS DO ATLETA NO FORMULÁRIO PARA EDIÇÃO
@@ -617,51 +782,6 @@
       });
     }
 
-    // ABRIR E PREENCHER MODAL COM FICHA COMPLETA
-    function abrirFichaModal(id) {
-      const atleta = listaAtletasGeral.find(a => a.id === id);
-      if (!atleta) return;
-
-      const container = document.getElementById('conteudo-modal-ficha');
-      container.innerHTML = `
-        <div class="flex items-center gap-4 border-b pb-4 mb-4">
-          <img src="logo.png" class="w-12 h-12 object-contain" alt="Logo">
-          <div>
-            <h4 class="font-bold text-slate-900 text-base">${atleta.nome || '-'}</h4>
-            <p class="text-xs text-slate-500">Ficha de Inscrição • FC Académicos 2026/2027</p>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-2 gap-3">
-          <div><strong>Escalão:</strong> ${atleta.escalao || '-'}</div>
-          <div><strong>Licença FPV:</strong> ${atleta.licenca || 'Pendente'}</div>
-          <div><strong>Data de Nascimento:</strong> ${atleta.dataNascimento || '-'}</div>
-          <div><strong>Compromisso Escolar:</strong> ${atleta.compromissoEscolar || '-'}</div>
-          <div><strong>Nacionalidade:</strong> ${atleta.nacionalidade || '-'}</div>
-          <div><strong>Naturalidade:</strong> ${atleta.naturalidade || '-'}</div>
-          <div><strong>Nome do Pai:</strong> ${atleta.nomePai || '-'}</div>
-          <div><strong>Nome da Mãe:</strong> ${atleta.nomeMae || '-'}</div>
-          <div><strong>N.° Doc. Identificação:</strong> ${atleta.documentoId || '-'}</div>
-          <div><strong>Validade Doc.:</strong> ${atleta.validadeDoc || '-'}</div>
-          <div><strong>NIF:</strong> ${atleta.nif || '-'}</div>
-          <div><strong>N.° Utente Saúde:</strong> ${atleta.numeroUtente || '-'}</div>
-          <div><strong>Telefone:</strong> ${atleta.telefone || '-'}</div>
-          <div><strong>Código Postal:</strong> ${atleta.codigoPostal || '-'}</div>
-          <div class="col-span-2"><strong>Morada:</strong> ${atleta.morada || '-'}</div>
-        </div>
-      `;
-
-      document.getElementById('btn-export-modal-pdf').onclick = function() {
-        gerarPDFDiv('conteudo-modal-ficha', atleta.nome);
-      };
-
-      document.getElementById('modal-ficha').classList.remove('hidden');
-    }
-
-    function fecharModal() {
-      document.getElementById('modal-ficha').classList.add('hidden');
-    }
-
     function filtrarTabela() {
       const termo = document.getElementById('filtro-pesquisa').value.toLowerCase();
       const escalaoSelec = document.getElementById('filtro-escalao').value;
@@ -692,17 +812,17 @@
       document.getElementById('nacionalidade').value = "Portuguesa";
       atletaIdEditando = null;
       document.getElementById('banner-edicao').classList.add('hidden');
-      document.getElementById('btnSalvarTexto').innerText = "Guardar na base de dados";
+      document.getElementById('btnSalvarTexto').innerText = "Guardar & Gerar Ficha em PDF";
     }
 
-    // FUNÇÃO DE GERAÇÃO DE PDF
+    // FUNÇÃO DE GERAÇÃO DE PDF A PARTIR DO POPUP FORMATADO
     function gerarPDFDiv(elementId, nomeAtleta) {
       const element = document.getElementById(elementId);
       const nomeFinal = nomeAtleta || 'Atleta';
 
       const opt = {
-        margin: [6, 6, 6, 6],
-        filename: `Ficha_Atleta_${nomeFinal.replace(/\s+/g, '_')}.pdf`,
+        margin: [8, 8, 8, 8],
+        filename: `Ficha_Inscricao_${nomeFinal.replace(/\s+/g, '_')}.pdf`,
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: { scale: 2, useCORS: true },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
